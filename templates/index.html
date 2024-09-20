@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Interativa com HTMX</title>
+    <script src="https://unpkg.com/htmx.org"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #343a40;
+        }
+        .cta-button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .cta-button:hover {
+            background-color: #0056b3;
+        }
+        #conteudo-extra, #dica, #feedback, #resultado-soma {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            display: none; /* Esconde inicialmente */
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        form {
+            margin-top: 20px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Bem-vindo à nossa Página Interativa!</h1>
+    <p>Descubra recursos incríveis!</p>
+
+    <button hx-get="/conteudo-extra" hx-target="#conteudo-extra" class="cta-button">Saiba Mais</button>
+    <div id="conteudo-extra"></div>
+
+    <button hx-get="/dica" hx-target="#dica" class="cta-button">Obter Dica do Dia</button>
+    <div id="dica"></div>
+
+    <h2>Deixe seu Feedback!</h2>
+    <form hx-post="/enviar-feedback" hx-target="#feedback" hx-swap="innerHTML">
+        <input type="text" name="nome" placeholder="Seu Nome" required>
+        <input type="text" name="mensagem" placeholder="Sua Mensagem" required>
+        <button type="submit">Enviar</button>
+    </form>
+    <div id="feedback"></div>
+
+    <h2>Calcular Soma</h2>
+    <input type="number" id="numero1" placeholder="Número 1" required>
+    <input type="number" id="numero2" placeholder="Número 2" required>
+    <button hx-get="/calcular-soma" hx-target="#resultado-soma" 
+            hx-include="[id=numero1],[id=numero2]" class="cta-button">Calcular</button>
+    <div id="resultado-soma"></div>
+
+    <script>
+        // Exibe a div quando o conteúdo for carregado
+        htmx.on('htmx:afterRequest', function (evt) {
+            const target = evt.detail.elt.getAttribute('hx-target');
+            if (target) {
+                document.querySelector(target).style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
